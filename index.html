@@ -1,0 +1,889 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Introduction to JavaScript</title>
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #FFF7FA;
+            color: #3A2630;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 900px;
+            margin: auto;
+            padding: 45px 20px;
+        }
+
+        .container > h1 {
+            text-align: center;
+            color: #C45A7A;
+            font-size: 36px;
+            letter-spacing: 1px;
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        input[type="text"],
+        input[type="date"] {
+            display: block;
+            width: 100%;
+            padding: 13px;
+            margin-bottom: 20px;
+            border: 2px solid #F2B6C9;
+            border-radius: 8px;
+            font-size: 16px;
+            color: #3A2630;
+            background: #FFFFFF;
+            outline: none;
+        }
+
+        input[type="text"]:focus,
+        input[type="date"]:focus {
+            border-color: #C45A7A;
+        }
+
+        button:not(.menu-toggle) {
+            width: auto;
+            min-width: 130px;
+            padding: 13px 22px;
+            border: 1px solid #C45A7A;
+            border-radius: 8px;
+            background: #C45A7A;
+            color: #FFFFFF;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s ease;
+            margin: 8px 8px 8px 0;
+        }
+
+        button:not(.menu-toggle):hover {
+            background: #A94464;
+            border-color: #A94464;
+            color: #FFFFFF;
+            transform: translateY(-1px);
+        }
+
+        button:not(.menu-toggle):active {
+            transform: scale(0.98);
+        }
+
+        .menu-toggle {
+            color: #C45A7A !important;
+            background: none !important;
+            border: none !important;
+        }
+
+        .menu-toggle:hover,
+        .menu-toggle:focus,
+        .menu-toggle:active {
+            color: #C45A7A;
+            background: none;
+            outline: none;
+        }
+
+        #start > p {
+            line-height: 1.7;
+        }
+
+        #quiz,
+        #result {
+            display: none;
+        }
+
+        .timer {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 20px 0;
+            color: #C45A7A;
+        }
+
+        #time {
+            display: inline-block;
+            min-width: 65px;
+            padding: 5px 10px;
+            background: #FCE5ED;
+            border: 1px solid #F2B6C9;
+            border-radius: 6px;
+        }
+
+        .question-box {
+            background: #FFFFFF;
+            border: 2px solid #F2B6C9;
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 25px;
+        }
+
+        .question-box h2 {
+            color: #C45A7A;
+            margin-bottom: 20px;
+        }
+
+        .question-box p {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .question-box input[type="text"] {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        /* Results panel */
+
+        #result {
+            width: 100%;
+            min-width: 0;
+            background: #FFFFFF;
+            border: 2px solid #F2B6C9;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 25px;
+        }
+
+        #score {
+            color: #C45A7A;
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        #studentInfo {
+            background: #FFF7FA;
+            border: 1px solid #F2B6C9;
+            border-radius: 8px;
+            padding: 15px;
+            line-height: 1.9;
+            overflow-wrap: anywhere;
+        }
+
+        #result h3 {
+            color: #C45A7A;
+            margin: 25px 0 12px;
+        }
+
+        /* Fixed answer-correction table */
+
+        .table-container {
+            width: 100%;
+            max-width: 100%;
+            overflow-x: auto;
+            margin: 15px 0 25px;
+            border: 1px solid #F2B6C9;
+            border-radius: 10px;
+            background: #FFFFFF;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        #correctionTable {
+            width: 100%;
+            min-width: 550px;
+            border-collapse: collapse;
+            margin: 0;
+            font-size: 14px;
+            background: #FFFFFF;
+        }
+
+        #correctionTable th,
+        #correctionTable td {
+            border: 1px solid #F2B6C9;
+            padding: 13px 12px;
+            text-align: left;
+            vertical-align: middle;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+
+        #correctionTable th {
+            background: #FCE5ED;
+            color: #A94464;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.4px;
+            white-space: nowrap;
+        }
+
+        #correctionTable tbody tr:nth-child(even) {
+            background: #FFF7FA;
+        }
+
+        #correctionTable tbody tr:hover {
+            background: #FCE5ED;
+        }
+
+        #correctionTable td:first-child {
+            text-align: center;
+            font-weight: bold;
+            width: 55px;
+        }
+
+        .correct {
+            color: #218653;
+            font-weight: bold;
+        }
+
+        .wrong {
+            color: #C03955;
+            font-weight: bold;
+        }
+
+        #printBtn {
+            display: none;
+        }
+
+        /* Print modal */
+
+        #printModal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            background: rgba(58, 38, 48, 0.55);
+        }
+
+        .modal-box {
+            background: #FFFFFF;
+            border: 2px solid #F2B6C9;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            margin: 15vh auto;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .modal-box h3 {
+            color: #C45A7A;
+        }
+
+        .modal-box button {
+            margin: 8px 4px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                width: 100%;
+                padding: 25px 12px;
+            }
+
+            .container > h1 {
+                font-size: 27px;
+                line-height: 1.3;
+            }
+
+            .question-box {
+                padding: 20px;
+            }
+
+            .question-box p {
+                font-size: 16px;
+            }
+
+            #result {
+                padding: 15px 10px;
+            }
+
+            #score {
+                font-size: 23px;
+            }
+
+            #correctionTable {
+                min-width: 520px;
+                font-size: 12px;
+            }
+
+            #correctionTable th,
+            #correctionTable td {
+                padding: 10px 8px;
+            }
+
+            button:not(.menu-toggle) {
+                min-width: 110px;
+                padding: 11px 15px;
+                font-size: 14px;
+            }
+        }
+
+        /* Print layout */
+
+        @media print {
+            body {
+                background: #FFFFFF;
+                color: #000000;
+                margin: 0;
+            }
+
+            header,
+            #start,
+            #quiz,
+            #printModal,
+            #printBtn,
+            #result > button {
+                display: none !important;
+            }
+
+            .container {
+                width: 100%;
+                max-width: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            .container > h1 {
+                font-size: 22px;
+                color: #000000;
+                margin-bottom: 20px;
+            }
+
+            #result {
+                display: block !important;
+                border: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            #score,
+            #result h3 {
+                color: #000000;
+            }
+
+            #studentInfo {
+                background: #FFFFFF;
+                border: 1px solid #999999;
+                color: #000000;
+            }
+
+            .table-container {
+                overflow: visible;
+                border: none;
+            }
+
+            #correctionTable {
+                width: 100%;
+                min-width: 0;
+                font-size: 10px;
+            }
+
+            #correctionTable th,
+            #correctionTable td {
+                border: 1px solid #777777;
+                padding: 6px;
+                color: #000000;
+                overflow-wrap: anywhere;
+            }
+
+            #correctionTable th {
+                background: #EEEEEE !important;
+                color: #000000;
+            }
+
+            #correctionTable tbody tr:nth-child(even),
+            #correctionTable tbody tr:hover {
+                background: #FFFFFF;
+            }
+
+            .correct,
+            .wrong {
+                color: #000000;
+            }
+
+            tr {
+                break-inside: avoid;
+            }
+        }
+        
+.correction-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.correction-card {
+    background: #FFFFFF;
+    border: 1px solid #F2B6C9;
+    border-left: 5px solid #C45A7A;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 3px 10px rgba(196, 90, 122, 0.08);
+}
+
+.correction-question {
+    color: #3A2630;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.correction-number {
+    color: #C45A7A;
+    margin-right: 5px;
+}
+
+.answer-line {
+    margin-top: 10px;
+    padding: 10px 12px;
+    border-radius: 6px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.answer-line.correct {
+    background: #E8F6ED;
+    color: #218653;
+    border-left: 3px solid #218653;
+}
+
+.answer-line.wrong {
+    background: #FCEBED;
+    color: #D62845;
+    border-left: 3px solid #D62845;
+}
+
+.answer-line.right-answer {
+    background: #E8F6ED;
+    color: #218653;
+    border-left: 3px solid #218653;
+}
+
+@media print {
+    .correction-card {
+        box-shadow: none;
+        break-inside: avoid;
+        border: 1px solid #BBBBBB;
+        border-left: 4px solid #888888;
+    }
+
+    .answer-line.correct,
+    .answer-line.wrong,
+    .answer-line.right-answer {
+        background: #FFFFFF;
+        color: #000000;
+        border: 1px solid #BBBBBB;
+    }
+}
+
+
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <nav>
+            <div class="logo">KNOWLEDGE TIME!</div>
+
+            <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+
+            <div class="nav-links" id="navLinks">
+                <a href="index.html">Home</a>
+                <a href="activities.html">Activities</a>
+                <a href="order.html">Order</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+
+        <h1>INTRODUCTION TO JAVASCRIPT</h1>
+
+        <!-- START SCREEN -->
+
+        <div id="start">
+            <br>
+            <p>Answer all 10 questions. You have 3 minutes.</p>
+            <br><br>
+
+            <label for="studentName">Student Name:</label>
+            <input type="text" id="studentName" placeholder="Enter your name">
+
+            <label for="courseSection">Course/Section:</label>
+            <input type="text" id="courseSection" placeholder="Enter your course and section">
+
+            <label for="quizDate">Date:</label>
+            <input type="date" id="quizDate">
+
+            <button type="button" onclick="startQuiz()">Start Quiz</button>
+        </div>
+
+        <!-- QUIZ SCREEN -->
+
+        <div id="quiz">
+
+            <div class="timer">
+                Time: <span id="time">3:00</span>
+            </div>
+
+            <div class="question-box">
+
+                <h2>Question <span id="questionNumber">1</span></h2>
+
+                <p id="question"></p>
+
+                <input
+                    type="text"
+                    id="currentAnswer"
+                    placeholder="Type your answer here"
+                    autocomplete="off"
+                >
+
+                <button type="button" id="backBtn" onclick="previousQuestion()" style="display:none;">
+                    Back
+                </button>
+
+                <button type="button" id="nextBtn" onclick="nextQuestion()">
+                    Next
+                </button>
+
+                <button type="button" id="doneBtn" onclick="confirmSubmit()" style="display:none;">
+                    Done
+                </button>
+
+            </div>
+
+            <input type="hidden" id="q1">
+            <input type="hidden" id="q2">
+            <input type="hidden" id="q3">
+            <input type="hidden" id="q4">
+            <input type="hidden" id="q5">
+            <input type="hidden" id="q6">
+            <input type="hidden" id="q7">
+            <input type="hidden" id="q8">
+            <input type="hidden" id="q9">
+            <input type="hidden" id="q10">
+
+        </div>
+
+        <!-- RESULTS SCREEN -->
+
+        <div id="result">
+
+            <h2 id="score"></h2>
+
+            <p id="studentInfo"></p>
+
+          
+        <h3>Answer Correction</h3>
+
+            <div id="correctionList" class="correction-list"></div>
+
+
+            <button type="button" id="printBtn" onclick="openPrintModal()">
+                Print Result
+            </button>
+
+            <button type="button" onclick="goToStart()">
+                Retake Quiz
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- PRINT CONFIRMATION MODAL -->
+
+    <div id="printModal">
+        <div class="modal-box">
+            <h3>Print Result</h3>
+            <br>
+            <p>Do you want to print the quiz result?</p>
+            <br>
+            <button type="button" onclick="printResult()">Print</button>
+            <button type="button" onclick="closePrintModal()">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        let time = 180;
+        let timer = null;
+        let submitted = false;
+        let currentQuestion = 0;
+
+        const answers = [
+            "JavaScript",
+            "Node.js",
+            "Hoisting",
+            "Debugging",
+            "Boolean",
+            "Netscape",
+            ".js",
+            "Web Browser",
+            "AJAX",
+            "ECMAScript"
+        ];
+
+        const questions = [
+            "A programming language commonly used to make web pages interactive and dynamic.",
+            "A JavaScript runtime environment that allows JavaScript to run outside of a web browser.",
+            "The behavior in JavaScript where certain declarations are processed before the code is executed.",
+            "The process of finding and fixing errors in a program.",
+            "A JavaScript data type that has only two possible values: true or false.",
+            "The company where JavaScript was created.",
+            "A JavaScript file extension.",
+            "A software application used to access and view websites and run JavaScript code.",
+            "A technique that allows a webpage to exchange data with a server asynchronously without reloading the entire page.",
+            "The standardized specification on which JavaScript is based."
+        ];
+
+        function startQuiz() {
+            const studentName =
+                document.getElementById("studentName").value.trim();
+
+            const courseSection =
+                document.getElementById("courseSection").value.trim();
+
+            const quizDate =
+                document.getElementById("quizDate").value;
+
+            if (!studentName || !courseSection || !quizDate) {
+                alert("Please complete all fields before starting the quiz.");
+                return;
+            }
+
+            clearInterval(timer);
+
+            submitted = false;
+            currentQuestion = 0;
+            time = 180;
+
+            for (let i = 1; i <= 10; i++) {
+                document.getElementById("q" + i).value = "";
+                document.getElementById("q" + i).disabled = false;
+            }
+
+            document.getElementById("correctionList").innerHTML = "";
+            document.getElementById("start").style.display = "none";
+            document.getElementById("result").style.display = "none";
+            document.getElementById("quiz").style.display = "block";
+            document.getElementById("time").textContent = "3:00";
+
+            showQuestion();
+
+            timer = setInterval(function () {
+                time--;
+
+                const minutes = Math.floor(time / 60);
+                const seconds = String(time % 60).padStart(2, "0");
+
+                document.getElementById("time").textContent =
+                    minutes + ":" + seconds;
+
+                if (time <= 0) {
+                    clearInterval(timer);
+                    saveCurrentAnswer();
+                    checkAnswers();
+                }
+            }, 1000);
+        }
+
+        function showQuestion() {
+            document.getElementById("questionNumber").textContent =
+                currentQuestion + 1;
+
+            document.getElementById("question").textContent =
+                questions[currentQuestion];
+
+            document.getElementById("currentAnswer").value =
+                document.getElementById("q" + (currentQuestion + 1)).value;
+
+            document.getElementById("backBtn").style.display =
+                currentQuestion > 0 ? "inline-block" : "none";
+
+            document.getElementById("nextBtn").style.display =
+                currentQuestion < 9 ? "inline-block" : "none";
+
+            document.getElementById("doneBtn").style.display =
+                currentQuestion === 9 ? "inline-block" : "none";
+
+            document.getElementById("currentAnswer").focus();
+        }
+
+        function saveCurrentAnswer() {
+            document.getElementById("q" + (currentQuestion + 1)).value =
+                document.getElementById("currentAnswer").value.trim();
+        }
+
+        function nextQuestion() {
+            saveCurrentAnswer();
+
+            if (currentQuestion < 9) {
+                currentQuestion++;
+                showQuestion();
+            }
+        }
+
+        function previousQuestion() {
+            saveCurrentAnswer();
+
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                showQuestion();
+            }
+        }
+
+        function confirmSubmit() {
+            saveCurrentAnswer();
+
+            if (confirm("Are you sure you want to submit your answers?")) {
+                checkAnswers();
+            }
+        }
+
+       
+function checkAnswers() {
+    if (submitted) {
+        return;
+    }
+
+    submitted = true;
+    clearInterval(timer);
+
+    let score = 0;
+
+    const correctionList = document.getElementById("correctionList");
+    correctionList.innerHTML = "";
+
+    for (let i = 0; i < 10; i++) {
+        const userAnswer =
+            document.getElementById("q" + (i + 1)).value.trim();
+
+        const correctAnswer = answers[i];
+
+        const isCorrect =
+            userAnswer !== "" &&
+            userAnswer.toLowerCase() === correctAnswer.toLowerCase();
+
+        if (isCorrect) {
+            score++;
+        }
+
+        const card = document.createElement("div");
+        card.className = "correction-card";
+
+        const questionTitle = document.createElement("p");
+        questionTitle.className = "correction-question";
+        questionTitle.textContent =
+            "Question " + (i + 1) + ": " + questions[i];
+
+        const studentAnswer = document.createElement("div");
+        studentAnswer.className =
+            "answer-line " + (isCorrect ? "correct" : "wrong");
+
+        studentAnswer.textContent =
+            "Your Answer: " + (userAnswer || "No Answer") +
+            (isCorrect ? " — Correct!" : " — Incorrect");
+
+        const rightAnswer = document.createElement("div");
+        rightAnswer.className = "answer-line right-answer";
+        rightAnswer.textContent =
+            "Correct Answer: " + correctAnswer;
+
+        card.appendChild(questionTitle);
+        card.appendChild(studentAnswer);
+
+        if (!isCorrect) {
+            card.appendChild(rightAnswer);
+        }
+
+        correctionList.appendChild(card);
+
+        document.getElementById("q" + (i + 1)).disabled = true;
+    }
+
+    document.getElementById("score").textContent =
+        "Your Score: " + score + " / 10";
+
+    const studentName =
+        document.getElementById("studentName").value.trim();
+
+    const courseSection =
+        document.getElementById("courseSection").value.trim();
+
+    const quizDate =
+        document.getElementById("quizDate").value;
+
+    document.getElementById("studentInfo").innerHTML =
+        "<strong>Student Name:</strong> " + escapeHTML(studentName) +
+        "<br><strong>Course/Section:</strong> " + escapeHTML(courseSection) +
+        "<br><strong>Date:</strong> " + escapeHTML(quizDate);
+
+    document.getElementById("quiz").style.display = "none";
+    document.getElementById("result").style.display = "block";
+    document.getElementById("printBtn").style.display = "inline-block";
+
+    document.getElementById("result").scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+}
+
+
+        function escapeHTML(value) {
+            return value.replace(/[&<>"']/g, function (character) {
+                const entities = {
+                    "&": "&amp;",
+                    "<": "&lt;",
+                    ">": "&gt;",
+                    '"': "&quot;",
+                    "'": "&#39;"
+                };
+
+                return entities[character];
+            });
+        }
+
+        function openPrintModal() {
+            document.getElementById("printModal").style.display = "block";
+        }
+
+        function closePrintModal() {
+            document.getElementById("printModal").style.display = "none";
+        }
+
+        function printResult() {
+            document.getElementById("printModal").style.display = "none";
+            window.print();
+        }
+
+        function goToStart() {
+            clearInterval(timer);
+            location.reload();
+        }
+
+        function toggleMenu() {
+            document.getElementById("navLinks").classList.toggle("show");
+        }
+    </script>
+
+</body>
+</html>
